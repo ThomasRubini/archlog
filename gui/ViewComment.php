@@ -11,10 +11,10 @@ class ViewComment extends View {
         $this->title = 'Exemple Blog Basic PHP : Connexion';
         $this->content = '
             <h1> Commenter sur ce post </h1> :
-            <form method="post" action="/annonces/index.php/annonces/submitComment">
+            <form method="post" action="/annonces/index.php/submitComment">
                 <label for="TEXT"> Contenu de votre commentaire : </label>
                 <br>
-                <textarea type="text" name="TEXT" id="TEXT" required></textarea>
+                <textarea name="TEXT" id="TEXT" required></textarea>
                 <input type="submit" value="Envoyer">
             </form>';
     }
