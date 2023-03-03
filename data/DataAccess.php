@@ -51,6 +51,13 @@ class dataAccess implements DataAccessInterface {
         return $post;
     }
 
+    public function insertComment($annonce_id, $user_login, $text) {
+        $result = $this->dataAccess->prepare('INSERT INTO COMMENT (annonce_id, user_login, text) VALUES (:ann_id, :user_login, :text)');
+        $result->bindValue(":ann_id", $annonce_id);
+        $result->bindValue(":user_login", $user_login);
+        $result->bindValue(":text", $text);
+        $result->execute();
+    }
 }
 
 ?>

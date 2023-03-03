@@ -13,6 +13,10 @@ class Controllers {
         $annoncesCheck->getPost($id, $data);
     }
 
+    public function commentSubmittedAction($annonce_id, $text, $data, $comments) {
+        $comments->submitComment($annonce_id, $text, $data);
+    }
+
 }
 
 ?>

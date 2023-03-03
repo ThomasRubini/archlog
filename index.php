@@ -7,13 +7,16 @@ use control\{Controllers, AnnoncesCheckingPresenter};
 include_once('control/Controllers.php');
 include_once('control/AnnoncesCheckingPresenter.php');
 
-use service\AnnoncesChecking;
+use service\{AnnoncesChecking, Comments};
 include_once('service/AnnoncesChecking.php');
+include_once('service/Comments.php');
 
-use gui\{Layout, ViewComment, ViewLogin, ViewAnnonces, ViewPost};
+use gui\{Layout, ViewComment, ViewCommentSubmitted, ViewLogin, ViewAnnonces, ViewPost};
+
 include_once('gui/Layout.php');
 include_once('gui/ViewLogin.php');
 include_once('gui/ViewComment.php');
+include_once('gui/ViewCommentSubmitted.php');
 include_once('gui/ViewAnnonces.php');
 include_once('gui/ViewPost.php');
 
@@ -60,7 +63,17 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     '/annonces/index.php/comment' == $uri
     && isset($_GET['ID_ANNONCE'])
 ) {
-    $viewComment = new ViewComment(new Layout('gui/layout.html'));
+    $viewComment = new ViewComment(new Layout('gui/layout.html'), $_GET["ID_ANNONCE"]);
+    $viewComment->display();
+} else if (
+    '/annonces/index.php/submitComment' == $uri
+    && isset($_POST["ANNONCE_ID"])
+    && isset($_POST["TEXT"])
+) {
+    $comments = new Comments();
+
+    $controller->commentSubmittedAction($_POST["ANNONCE_ID"], $_POST["TEXT"], $data, $comments);
+    $viewComment = new ViewCommentSubmitted(new Layout('gui/layout.html'));
     $viewComment->display();
 } else {
     header('Status: 404 Not Found');
