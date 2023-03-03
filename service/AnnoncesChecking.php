@@ -11,19 +11,23 @@ class AnnoncesChecking {
     }
 
     public function authenticate($login, $password, $data) {
-        return $data->getUser($login, $password) != null;
+        $user = $data->getUser($login);
+        return $user != null and $user->getPassword() == $password;
     }
 
     public function getAllAnnonces($data) {
         $annonces = $data->getAllAnnonces();
         $this->annoncesTxt = array();
-        foreach ($annonces as $post)
-            $this->annoncesTxt[] = ['ID' => $post->getId(), 'TITLE' => $post->getTitle(), 'BODY' => $post->getBody(), 'DATE' => $post->getDate()];
+        foreach ($annonces as $post){
+            $user = $data->getUser($post->getUserLogin());
+            $this->annoncesTxt[] = ['ID' => $post->getId(), 'TITLE' => $post->getTitle(), 'BODY' => $post->getBody(), 'DATE' => $post->getDate(), 'USER_NAME' => $user->getLogin()];
+        }
     }
 
     public function getPost($id, $data) {
         $post = $data->getPost($id);
-        $this->annoncesTxt[] = array('ID' => $post->getId(), 'TITLE' => $post->getTitle(), 'BODY' => $post->getBody(), 'DATE' => $post->getDate());
+        $user = $data->getUser($post->getUserLogin());
+        $this->annoncesTxt[] = array('ID' => $post->getId(), 'TITLE' => $post->getTitle(), 'BODY' => $post->getBody(), 'DATE' => $post->getDate(), 'USER_NAME' => $user->getLogin());
     }
 
 }

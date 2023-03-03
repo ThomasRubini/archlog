@@ -29,6 +29,7 @@ class Presenter {
         if ($this->annoncesCheck->getAnnoncesTxt() != null) {
             $post = $this->annoncesCheck->getAnnoncesTxt()[0];
             $content = '<h1>' . $post['TITLE'] . '</h1>';
+            $content .= '<div class="user">' . $post['USER_NAME'] . '</div>';
             $content .= '<div class="date">' . $post['DATE'] . '</div>';
             $content .= '<div class="body">' . $post['BODY'] . '</div>';
         }
