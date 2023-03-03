@@ -11,16 +11,13 @@ class AnnoncesCheckingPresenter {
     }
 
     public function getAllAnnoncesHTML() {
-        $content = null;
-        if ($this->annoncesCheck->getAnnoncesTxt() != null) {
-            $content = '<h1>List of Posts</h1>  <ul>';
-            foreach ($this->annoncesCheck->getAnnoncesTxt() as $post) {
-                $content .= ' <li>';
-                $content .= '<a href="/annonces/index.php/post?ID=' . $post['ID'] . '">' . $post['TITLE'] . '</a>';
-                $content .= ' </li>';
-            }
-            $content .= '</ul>';
+        $content = '<h1>List of Posts</h1>  <ul>';
+        foreach ($this->annoncesCheck->getAnnoncesTxt() as $post) {
+            $content .= ' <li>';
+            $content .= '<a href="/annonces/index.php/post?ID=' . $post['ID'] . '">' . $post['TITLE'] . '</a>';
+            $content .= ' </li>';
         }
+        $content .= '</ul>';
         return $content;
     }
 
