@@ -64,7 +64,7 @@ class dataAccess implements DataAccessInterface {
 
     public function getCommentsUserReceived($userLogin) {
         $result = $this->dataAccess->prepare('
-            SELECT * FROM COMMENT
+            SELECT COMMENT.* FROM COMMENT
             JOIN POST ON COMMENT.annonce_id = POST.id
              WHERE POST.user_login = :user_login
         ');
