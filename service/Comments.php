@@ -10,8 +10,8 @@ class Comments
         return $this->commentsTxt;
     }
 
-    public function submitComment($annonce_id, $text, $data){
-        $data->insertComment($annonce_id, null, $text);
+    public function submitComment($annonce_id, $userLogin, $text, $data){
+        $data->insertComment($annonce_id, $userLogin, $text);
     }
 
     public function getCommentsUserReceived($userLogin, $data){

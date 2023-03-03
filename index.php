@@ -91,7 +91,7 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
 ) {
     $comments = new Comments();
 
-    $controller->commentSubmittedAction($_POST["ANNONCE_ID"], $_POST["TEXT"], $data, $comments);
+    $controller->commentSubmittedAction($_POST["ANNONCE_ID"], $_SESSION["LOGIN"], $_POST["TEXT"], $data, $comments);
     $viewComment = new ViewCommentSubmitted(new Layout('gui/layout.html'));
     $viewComment->display();
 } else if (
