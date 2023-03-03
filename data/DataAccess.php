@@ -90,10 +90,25 @@ class dataAccess implements DataAccessInterface {
 
         $comments = array();
         while ($row = $result->fetch()){
-            $comments[] = new Comment($row['id'], $row['annonce_id'], $row['text'], $row['user_login']);
+            $comments[] = new Comment($row['id'], $row['annonce_id'], $row['text'], $row['answer_text'], $row['user_login']);
         }
 
         return $comments;
+    }
+
+    /**
+     * Inserts an answer to a comment in the database, by editing the COMMENT table
+     *
+     * @param string $comment_id the ID of the comment
+     * @param string $answerText the content of this comment
+     *
+     * @return void
+     */
+    public function insertAnswer($comment_id, $answerText){
+        $result = $this->dataAccess->prepare('UPDATE COMMENT SET answer_text=:answerText WHERE ID=:comment_id');
+        $result->bindValue(":answerText", $answerText);
+        $result->bindValue(":comment_id", $comment_id);
+        $result->execute();
     }
 }
 

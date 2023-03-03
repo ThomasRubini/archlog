@@ -20,6 +20,7 @@ class Controllers {
      * @param string $userLogin the login of the user who posted this comment
      * @param string $text the content of this comment
      * @param string $data DataAccess reference
+     * @param string $comments Reference to the use-case
      *
      * @return void
      */
@@ -40,6 +41,21 @@ class Controllers {
      */
     public function myCommentsAction($userLogin, $data, $comments) {
         $comments->getCommentsUserReceived($userLogin, $data);
+    }
+
+    /**
+     * Controller method for /annonces/index.php/submitAnswer
+     * will write the answer in the database
+     *
+     * @param string $comment_id the ID of the post/annonce linked to the comment
+     * @param string $answerText the content of the answer
+     * @param string $data DataAccess reference
+     * @param string $comments Reference to the use-case
+     *
+     * @return void
+     */
+    public function submitAnswerAction($comment_id, $answerText, $data, $comments) {
+        $comments->submitAnswer($comment_id, $answerText, $data);
     }
 
 }

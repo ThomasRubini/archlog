@@ -13,7 +13,7 @@ include_once('service/Login.php');
 include_once('service/AnnoncesChecking.php');
 include_once('service/Comments.php');
 
-use gui\{Layout, ViewComment, ViewCommentSubmitted, ViewLogin, ViewAnnonces, ViewPost, ViewMyComments};
+use gui\{Layout, ViewComment, ViewCommentSubmitted, ViewLogin, ViewAnnonces, ViewPost, ViewMyComments, ViewAnswerSubmitted};
 
 include_once('gui/Layout.php');
 include_once('gui/ViewLogin.php');
@@ -22,6 +22,7 @@ include_once('gui/ViewCommentSubmitted.php');
 include_once('gui/ViewAnnonces.php');
 include_once('gui/ViewPost.php');
 include_once('gui/ViewMyComments.php');
+include_once('gui/ViewAnswerSubmitted.php');
 
 $data = null;
 try {
@@ -102,6 +103,17 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
 
     $controller->myCommentsAction($_SESSION["LOGIN"], $data, $comments);
     $viewComment = new ViewMyComments(new Layout('gui/layout.html'), $commentsPresenter);
+    $viewComment->display();
+} else if (
+    '/annonces/index.php/submitAnswer' == $uri
+    && isset($_POST["COMMENT_ID"])
+    && isset($_POST["ANSWER_TEXT"])
+) {
+    $comments = new Comments();
+    $commentsPresenter = new CommentsPresenter($comments);
+
+    $controller->submitAnswerAction($_POST["COMMENT_ID"], $_POST["ANSWER_TEXT"], $data, $comments);
+    $viewComment = new ViewAnswerSubmitted(new Layout('gui/layout.html'));
     $viewComment->display();
 } else {
     header('Status: 404 Not Found');
