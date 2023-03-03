@@ -32,6 +32,7 @@ class AnnoncesCheckingPresenter {
             $content .= '<div class="user">' . $post['USER_NAME'] . '</div>';
             $content .= '<div class="date">' . $post['DATE'] . '</div>';
             $content .= '<div class="body">' . $post['BODY'] . '</div>';
+            $content .= '<a href="/annonces/index.php/comment?ID_ANNONCE='.$post["ID"].'">Commenter sur cette annonce</a>';
         }
         return $content;
     }

@@ -10,9 +10,10 @@ include_once('control/AnnoncesCheckingPresenter.php');
 use service\AnnoncesChecking;
 include_once('service/AnnoncesChecking.php');
 
-use gui\{Layout, ViewLogin, ViewAnnonces, ViewPost};
+use gui\{Layout, ViewComment, ViewLogin, ViewAnnonces, ViewPost};
 include_once('gui/Layout.php');
 include_once('gui/ViewLogin.php');
+include_once('gui/ViewComment.php');
 include_once('gui/ViewAnnonces.php');
 include_once('gui/ViewPost.php');
 
@@ -55,6 +56,12 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     $controller->postAction($_GET['ID'], $data, $annoncesCheck);
     $vuePost = new ViewPost(new Layout('gui/layout.html'), $presenter);
     $vuePost->display();
+} else if (
+    '/annonces/index.php/comment' == $uri
+    && isset($_GET['ID_ANNONCE'])
+) {
+    $viewComment = new ViewComment(new Layout('gui/layout.html'));
+    $viewComment->display();
 } else {
     header('Status: 404 Not Found');
     echo '<html><body><h1>My Page Not Found</h1></body></html>';
