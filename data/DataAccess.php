@@ -23,7 +23,7 @@ class dataAccess implements DataAccessInterface {
 
     public function getUser($login, $password) {
         $user = null;
-        $query = 'SELECT LOGIN FROM USER WHERE LOGIN="' . $login . '" and PASSWORD="' . $password . '"';
+        $query = 'SELECT login FROM USER WHERE LOGIN="' . $login . '" and PASSWORD="' . $password . '"';
         $result = $this->dataAccess->query($query);
         if ($result->rowCount()) $user = new User($login, $password);
         $result->closeCursor();
@@ -31,10 +31,10 @@ class dataAccess implements DataAccessInterface {
     }
 
     public function getAllAnnonces() {
-        $result = $this->dataAccess->query('SELECT ID, TITLE FROM POST');
+        $result = $this->dataAccess->query('SELECT * FROM POST');
         $annonces = array();
         while ($row = $result->fetch())
-            $annonces[] = new Post($row['ID'], $row['TITLE'], $row['BODY'], $row['DATE']);
+            $annonces[] = new Post($row['id'], $row['title'], $row['body'], $row['date']);
         $result->closeCursor();
         return $annonces;
     }
@@ -43,7 +43,7 @@ class dataAccess implements DataAccessInterface {
         $id = intval($id);
         $result = $this->dataAccess->query('SELECT * FROM POST WHERE ID=' . $id);
         $row = $result->fetch();
-        $post = new Post($row['ID'], $row['TITLE'], $row['BODY'], $row['DATE']);
+        $post = new Post($row['id'], $row['title'], $row['body'], $row['date']);
         $result->closeCursor();
         return $post;
     }
