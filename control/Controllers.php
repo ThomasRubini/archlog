@@ -16,6 +16,10 @@ class Controllers {
         $comments->submitComment($annonce_id, $text, $data);
     }
 
+    public function myCommentsAction($userLogin, $data, $comments) {
+        $comments->getCommentsUserReceived($userLogin, $data);
+    }
+
 }
 
 ?>

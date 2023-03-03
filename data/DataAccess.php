@@ -5,6 +5,9 @@ namespace data;
 include "service/DataAccessInterface.php";
 include "domain/User.php";
 include "domain/Post.php";
+include "domain/Comment.php";
+
+use Domain\Comment;
 
 use service\DataAccessInterface;
 use domain\{User, Post};
@@ -57,6 +60,23 @@ class dataAccess implements DataAccessInterface {
         $result->bindValue(":user_login", $user_login);
         $result->bindValue(":text", $text);
         $result->execute();
+    }
+
+    public function getCommentsUserReceived($userLogin) {
+        $result = $this->dataAccess->prepare('
+            SELECT * FROM COMMENT
+            JOIN POST ON COMMENT.annonce_id = POST.id
+             WHERE POST.user_login = :user_login
+        ');
+        $result->bindValue(":user_login", $userLogin);
+        $result->execute();
+
+        $comments = array();
+        while ($row = $result->fetch()){
+            $comments[] = new Comment($row['id'], $row['annonce_id'], $row['text'], $row['user_login']);
+        }
+
+        return $comments;
     }
 }
 
