@@ -3,9 +3,9 @@
 use data\DataAccess;
 include_once('data/DataAccess.php');
 
-use control\{Controllers, Presenter};
+use control\{Controllers, AnnoncesCheckingPresenter};
 include_once('control/Controllers.php');
-include_once('control/Presenter.php');
+include_once('control/AnnoncesCheckingPresenter.php');
 
 use service\AnnoncesChecking;
 include_once('service/AnnoncesChecking.php');
@@ -29,8 +29,6 @@ try {
 }
 
 $controller = new Controllers();
-$annoncesCheck = new AnnoncesChecking();
-$presenter = new Presenter($annoncesCheck);
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -41,6 +39,9 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     '/annonces/index.php/annonces' == $uri
     && isset($_POST['LOGIN']) && isset($_POST['PASSWORD'])
 ) {
+    $annoncesCheck = new AnnoncesChecking();
+    $presenter = new AnnoncesCheckingPresenter($annoncesCheck);
+
     $controller->annoncesAction($_POST['LOGIN'], $_POST['PASSWORD'], $data, $annoncesCheck);
     $vueAnnonces = new ViewAnnonces(new Layout('gui/layout.html'), $_POST['LOGIN'], $presenter);
     $vueAnnonces->display();
@@ -48,6 +49,9 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     '/annonces/index.php/post' == $uri
     && isset($_GET['ID'])
 ) {
+    $annoncesCheck = new AnnoncesChecking();
+    $presenter = new AnnoncesCheckingPresenter($annoncesCheck);
+
     $controller->postAction($_GET['ID'], $data, $annoncesCheck);
     $vuePost = new ViewPost(new Layout('gui/layout.html'), $presenter);
     $vuePost->display();

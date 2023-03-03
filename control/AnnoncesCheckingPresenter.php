@@ -2,7 +2,7 @@
 
 namespace control;
 
-class Presenter {
+class AnnoncesCheckingPresenter {
 
     protected $annoncesCheck;
 
