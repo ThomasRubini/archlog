@@ -10,11 +10,6 @@ class AnnoncesChecking {
         return $this->annoncesTxt;
     }
 
-    public function authenticate($login, $password, $data) {
-        $user = $data->getUser($login);
-        return $user != null and $user->getPassword() == $password;
-    }
-
     public function getAllAnnonces($data) {
         $annonces = $data->getAllAnnonces();
         $this->annoncesTxt = array();

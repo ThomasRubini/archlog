@@ -7,7 +7,8 @@ use control\{Controllers, AnnoncesCheckingPresenter};
 include_once('control/Controllers.php');
 include_once('control/AnnoncesCheckingPresenter.php');
 
-use service\{AnnoncesChecking, Comments};
+use service\{Login, AnnoncesChecking, Comments};
+include_once('service/Login.php');
 include_once('service/AnnoncesChecking.php');
 include_once('service/Comments.php');
 
@@ -36,18 +37,34 @@ $controller = new Controllers();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+session_start();
+
+if(isset($_POST["LOGIN"]) && isset($_POST["PASSWORD"])){
+    $loginService = new Login();
+    if( $loginService->authenticate($_POST["LOGIN"], $_POST["PASSWORD"], $data) ) {
+        $_SESSION["LOGIN"] = $_POST["LOGIN"];
+    }else{
+        header("refresh:5;url=/annonces/index.php");
+        echo 'Erreur de login et/ou de mot de passe (redirection automatique dans 5 sec.)';
+        exit();
+    }
+}else if(!isset($_SESSION["LOGIN"]) && !('/annonces/' == $uri || '/annonces/index.php' == $uri)){
+    header("refresh:5;url=/annonces/index.php");
+    echo "Vous n'êtes pas authentifié. Redirection vers la page de login dans 5 secondes";
+    exit();
+}
+
 if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     $viewLogin = new ViewLogin(new Layout('gui/layout.html'));
     $viewLogin->display();
 } else if (
     '/annonces/index.php/annonces' == $uri
-    && isset($_POST['LOGIN']) && isset($_POST['PASSWORD'])
 ) {
     $annoncesCheck = new AnnoncesChecking();
     $presenter = new AnnoncesCheckingPresenter($annoncesCheck);
 
-    $controller->annoncesAction($_POST['LOGIN'], $_POST['PASSWORD'], $data, $annoncesCheck);
-    $vueAnnonces = new ViewAnnonces(new Layout('gui/layout.html'), $_POST['LOGIN'], $presenter);
+    $controller->annoncesAction($data, $annoncesCheck);
+    $vueAnnonces = new ViewAnnonces(new Layout('gui/layout.html'), $_SESSION['LOGIN'], $presenter);
     $vueAnnonces->display();
 } else if (
     '/annonces/index.php/post' == $uri
