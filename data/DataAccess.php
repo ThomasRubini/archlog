@@ -54,6 +54,15 @@ class dataAccess implements DataAccessInterface {
         return $post;
     }
 
+    /**
+     * Inserts a comment in the database
+     *
+     * @param string $annonce_id the ID of the post/annonce linked to the comment
+     * @param string $user_login the login of the user who posted this comment
+     * @param string $text the content of this comment
+     *
+     * @return void
+     */
     public function insertComment($annonce_id, $user_login, $text) {
         $result = $this->dataAccess->prepare('INSERT INTO COMMENT (annonce_id, user_login, text) VALUES (:ann_id, :user_login, :text)');
         $result->bindValue(":ann_id", $annonce_id);
@@ -62,6 +71,14 @@ class dataAccess implements DataAccessInterface {
         $result->execute();
     }
 
+
+    /**
+     * Query comments from the database
+     *
+     * @param string $userLogin the login of the user
+     *
+     * @return array(Comment)
+     */
     public function getCommentsUserReceived($userLogin) {
         $result = $this->dataAccess->prepare('
             SELECT COMMENT.* FROM COMMENT

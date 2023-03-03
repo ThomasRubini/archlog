@@ -12,6 +12,11 @@ class CommentsPresenter {
         $this->comments = $comments;
     }
 
+    /**
+     * Get the HTML tags to display the comments
+     *
+     * @return string
+     */
     public function getAllCommentsHTML(){
         $content = '<h1> Comments received :</h1>  <ul>';
         foreach ($this->comments->getCommentsTxt() as $comment) {
