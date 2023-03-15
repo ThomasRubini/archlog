@@ -4,8 +4,8 @@ namespace control;
 
 class Controllers {
 
-    public function annoncesAction($data, $annoncesCheck) {
-        $annoncesCheck->getAllAnnonces($data);
+    public function annoncesAction($dataAnnonce, $annoncesCheck) {
+        $annoncesCheck->getAllAnnonces($dataAnnonce);
     }
 
     public function postAction($id, $data, $annoncesCheck) {

@@ -1,7 +1,8 @@
     <?php
 
-use data\DataAccess;
-include_once('data/DataAccess.php');
+use data\{AnnonceSqlAccess, UserSqlAccess};
+include_once('data/AnnonceSqlAccess.php');
+include_once('data/UserSqlAccess.php');
 
 use control\{Controllers, AnnoncesCheckingPresenter, CommentsPresenter};
 include_once('control/Controllers.php');
@@ -24,13 +25,15 @@ include_once('gui/ViewPost.php');
 include_once('gui/ViewMyComments.php');
 include_once('gui/ViewAnswerSubmitted.php');
 
-$data = null;
+$dataAnnonce = null;
+$dataUser = null;
 try {
-    $data = new DataAccess(new PDO(
-        'mysql:host=mysql-archlog.alwaysdata.net;dbname=archlog_db',
-        'archlog',
-        'd4pB2j4gF6AMxLRF7X53'
-    ));
+    $pdo = new PDO(
+    'mysql:host=mysql-archlog.alwaysdata.net;dbname=archlog_db',
+    'archlog',
+    'd4pB2j4gF6AMxLRF7X53');
+    $dataAnnonce = new AnnonceSqlAccess($pdo);
+    $dataUser = new UserSqlAccess($pdo);
 } catch (PDOException $e) {
     echo 'Erreur de connexion : ' . $e->getMessage();
     die();
@@ -38,13 +41,14 @@ try {
 
 $controller = new Controllers();
 
+
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 session_start();
 
 if(isset($_POST["LOGIN"]) && isset($_POST["PASSWORD"])){
     $loginService = new Login();
-    if( $loginService->authenticate($_POST["LOGIN"], $_POST["PASSWORD"], $data) ) {
+    if( $loginService->authenticate($_POST["LOGIN"], $_POST["PASSWORD"], $dataUser) ) {
         $_SESSION["LOGIN"] = $_POST["LOGIN"];
     }else{
         header("refresh:5;url=/annonces/index.php");
@@ -66,7 +70,7 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     $annoncesCheck = new AnnoncesChecking();
     $presenter = new AnnoncesCheckingPresenter($annoncesCheck);
 
-    $controller->annoncesAction($data, $annoncesCheck);
+    $controller->annoncesAction($dataAnnonce, $annoncesCheck);
     $vueAnnonces = new ViewAnnonces(new Layout('gui/layout.html'), $_SESSION['LOGIN'], $presenter);
     $vueAnnonces->display();
 } else if (
@@ -76,45 +80,46 @@ if ('/annonces/' == $uri || '/annonces/index.php' == $uri) {
     $annoncesCheck = new AnnoncesChecking();
     $presenter = new AnnoncesCheckingPresenter($annoncesCheck);
 
-    $controller->postAction($_GET['ID'], $data, $annoncesCheck);
+    $controller->postAction($_GET['ID'], $dataAnnonce, $annoncesCheck);
     $vuePost = new ViewPost(new Layout('gui/layout.html'), $presenter);
     $vuePost->display();
-} else if (
-    '/annonces/index.php/comment' == $uri
-    && isset($_GET['ID_ANNONCE'])
-) {
-    $viewComment = new ViewComment(new Layout('gui/layout.html'), $_GET["ID_ANNONCE"]);
-    $viewComment->display();
-} else if (
-    '/annonces/index.php/submitComment' == $uri
-    && isset($_POST["ANNONCE_ID"])
-    && isset($_POST["TEXT"])
-) {
-    $comments = new Comments();
-
-    $controller->commentSubmittedAction($_POST["ANNONCE_ID"], $_SESSION["LOGIN"], $_POST["TEXT"], $data, $comments);
-    $viewComment = new ViewCommentSubmitted(new Layout('gui/layout.html'));
-    $viewComment->display();
-} else if (
-    '/annonces/index.php/myComments' == $uri
-) {
-    $comments = new Comments();
-    $commentsPresenter = new CommentsPresenter($comments);
-
-    $controller->myCommentsAction($_SESSION["LOGIN"], $data, $comments);
-    $viewComment = new ViewMyComments(new Layout('gui/layout.html'), $commentsPresenter);
-    $viewComment->display();
-} else if (
-    '/annonces/index.php/submitAnswer' == $uri
-    && isset($_POST["COMMENT_ID"])
-    && isset($_POST["ANSWER_TEXT"])
-) {
-    $comments = new Comments();
-    $commentsPresenter = new CommentsPresenter($comments);
-
-    $controller->submitAnswerAction($_POST["COMMENT_ID"], $_POST["ANSWER_TEXT"], $data, $comments);
-    $viewComment = new ViewAnswerSubmitted(new Layout('gui/layout.html'));
-    $viewComment->display();
+// partiel
+//} else if (
+//    '/annonces/index.php/comment' == $uri
+//    && isset($_GET['ID_ANNONCE'])
+//) {
+//    $viewComment = new ViewComment(new Layout('gui/layout.html'), $_GET["ID_ANNONCE"]);
+//    $viewComment->display();
+//} else if (
+//    '/annonces/index.php/submitComment' == $uri
+//    && isset($_POST["ANNONCE_ID"])
+//    && isset($_POST["TEXT"])
+//) {
+//    $comments = new Comments();
+//
+//    $controller->commentSubmittedAction($_POST["ANNONCE_ID"], $_SESSION["LOGIN"], $_POST["TEXT"], $data, $comments);
+//    $viewComment = new ViewCommentSubmitted(new Layout('gui/layout.html'));
+//    $viewComment->display();
+//} else if (
+//    '/annonces/index.php/myComments' == $uri
+//) {
+//    $comments = new Comments();
+//    $commentsPresenter = new CommentsPresenter($comments);
+//
+//    $controller->myCommentsAction($_SESSION["LOGIN"], $data, $comments);
+//    $viewComment = new ViewMyComments(new Layout('gui/layout.html'), $commentsPresenter);
+//    $viewComment->display();
+//} else if (
+//    '/annonces/index.php/submitAnswer' == $uri
+//    && isset($_POST["COMMENT_ID"])
+//    && isset($_POST["ANSWER_TEXT"])
+//) {
+//    $comments = new Comments();
+//    $commentsPresenter = new CommentsPresenter($comments);
+//
+//    $controller->submitAnswerAction($_POST["COMMENT_ID"], $_POST["ANSWER_TEXT"], $data, $comments);
+//    $viewComment = new ViewAnswerSubmitted(new Layout('gui/layout.html'));
+//    $viewComment->display();
 } else {
     header('Status: 404 Not Found');
     echo '<html><body><h1>My Page Not Found</h1></body></html>';

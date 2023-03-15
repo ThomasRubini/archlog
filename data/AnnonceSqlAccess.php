@@ -2,17 +2,17 @@
 
 namespace data;
 
-include "service/DataAccessInterface.php";
+include "service/AnnonceAccessInterface.php";
 include "domain/User.php";
 include "domain/Post.php";
 include "domain/Comment.php";
 
 use Domain\Comment;
 
-use service\DataAccessInterface;
+use service\AnnonceAccessInterface;
 use domain\{User, Post};
 
-class dataAccess implements DataAccessInterface {
+class AnnonceSqlAccess implements AnnonceAccessInterface {
 
     protected $dataAccess = null;
 
@@ -22,18 +22,6 @@ class dataAccess implements DataAccessInterface {
 
     public function __destruct() {
         $this->dataAccess = null;
-    }
-
-    public function getUser($login) {
-
-        $query = 'SELECT * FROM USER WHERE LOGIN="' . $login . '"';
-        $result = $this->dataAccess->query($query);
-        if (!$result->rowCount())return null;
-        $row = $result->fetch();
-
-        $user = new User($row["login"], $row["password"]);
-        $result->closeCursor();
-        return $user;
     }
 
     public function getAllAnnonces() {
